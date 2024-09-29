@@ -12,8 +12,6 @@ import java.util.List;
 public interface CourseService {
     List<CourseDTO> getAllCourses();
 
-    List<CourseDTO> getStudentCourses();
-
     void registerCourse(RegistrationDTO registrationDTO);
 
     void cancelCourse(RegistrationDTO registrationDTO);
