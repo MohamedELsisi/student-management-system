@@ -1,5 +1,6 @@
 package com.bank.boubyan.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,14 +31,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String requestHeader = request.getHeader("Authorization");
-
+        String username;
         if (requestHeader == null || !requestHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = requestHeader.substring(7);
-        String username = jwtService.getUsername(token);
+
+
+        try {
+            username = jwtService.getUsername(token);
+
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid token");
+            return;
+        }
+
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

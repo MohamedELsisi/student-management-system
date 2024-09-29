@@ -1,7 +1,7 @@
 package com.bank.boubyan.restcontroller;
 
 
-
+import com.bank.boubyan.dto.LoginRequest;
 import com.bank.boubyan.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class LoginController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetails;
-   @Autowired
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public LoginController(JwtService jwtService, AuthenticationManager authenticationManager, UserDetailsService userDetails) {
@@ -27,12 +27,12 @@ public class LoginController {
         this.userDetails = userDetails;
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<String> login(@RequestHeader String username, @RequestHeader String password) {
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
-        return ResponseEntity.ok(jwtService.generateJwt(userDetails.loadUserByUsername(username)));
+        return ResponseEntity.ok(jwtService.generateJwt(userDetails.loadUserByUsername(loginRequest.getUsername())));
     }
 
 }

@@ -25,7 +25,7 @@ public class JwtService {
                 .subject(user.getUsername())
                 .claim("role", user.getAuthorities())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + jwtExpirationInMs)) // 1 day expiration
+                .expiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
                 .signWith(getSignInKey())
                 .compact();
     }
