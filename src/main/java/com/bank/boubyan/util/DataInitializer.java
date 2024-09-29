@@ -6,6 +6,7 @@ import com.bank.boubyan.repository.CourseRepository;
 import com.bank.boubyan.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -18,10 +19,15 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @Override
     public void run(String... args) throws Exception {
 
+        System.out.println();
+        System.out.println("------------------------------------");
         Course course1 = new Course();
 
         course1.setName("Introduction to Programming");
@@ -49,30 +55,18 @@ public class DataInitializer implements CommandLineRunner {
         courseRepository.save(course2);
         courseRepository.save(course3);
 
-        // Create and save students
+
         Student student1 = new Student();
+        student1.setFirstName("John");
+        student1.setLastName("Doe");
+        student1.setEmail("john.doe@example.com");
+        student1.setUsername("MELSISI");
+        student1.setPassword(passwordEncoder.encode("123456"));
+        student1.setDateOfBirth(LocalDateTime.of(2000, 6, 15, 0, 0));
+        student1.setAuthorities("USER");
 
-        student1.setFirstName("Michael");
-        student1.setLastName("Brown");
-        student1.setEmail("michael.brown@example.com");
-        student1.setDateOfBirth(LocalDateTime.of(2000, 5, 15, 0, 0));
-
-        Student student2 = new Student();
-        student2.setId(2);
-        student2.setFirstName("Emily");
-        student2.setLastName("Davis");
-        student2.setEmail("emily.davis@example.com");
-        student2.setDateOfBirth(LocalDateTime.of(1999, 8, 22, 0, 0));
-
-        Student student3 = new Student();
-        student3.setId(3);
-        student3.setFirstName("Daniel");
-        student3.setLastName("Wilson");
-        student3.setEmail("daniel.wilson@example.com");
-        student3.setDateOfBirth(LocalDateTime.of(2001, 12, 30, 0, 0));
 
         studentRepository.save(student1);
-        studentRepository.save(student2);
-        studentRepository.save(student3);
+
     }
 }

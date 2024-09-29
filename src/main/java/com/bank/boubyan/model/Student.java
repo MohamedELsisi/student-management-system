@@ -1,14 +1,19 @@
 package com.bank.boubyan.model;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Table(name = "student")
 @Entity
-public class Student implements Serializable {
+public class Student implements Serializable, UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "studentGenerator")
@@ -24,6 +29,12 @@ public class Student implements Serializable {
     @Column(name = "EMAIL")
     private String email;
 
+    @Column(name = "USERNAME", nullable = false, unique = true)
+    private String username;
+
+    @Column(name ="PASSWORD",nullable = false)
+    private String password;
+
     @Column(name = "BIRTH_DATE")
     private LocalDateTime dateOfBirth;
 
@@ -34,6 +45,25 @@ public class Student implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     Set<Course> courses;
 
+    @Column(name = "authorities", nullable = false)
+    private String authorities;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(authorities));
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setAuthorities(String authorities) {
+        this.authorities = authorities;
+    }
 
     public Integer getId() {
         return id;
@@ -81,5 +111,13 @@ public class Student implements Serializable {
 
     public void setCourses(Set<Course> courses) {
         this.courses = courses;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
